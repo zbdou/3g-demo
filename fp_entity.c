@@ -2,6 +2,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <assert.h>
+#include <osmocom/core/linuxlist.h>
 #include <osmocom/core/socket.h>
 
 #include "fp_entity.h"
@@ -26,8 +27,9 @@ void close_socket(fp_entity *fpe);
  */
 int fp_entity_init(fp_entity *fpe)
 {
-
 	if (fpe == NULL) return FAILURE;
+
+	INIT_LLIST_HEAD(&fpe->txrx_queue.qlist);
 
 	/* check if fpe->self, fpe->peer are valid */
 	if(HAS_RX(fpe)) {
@@ -136,6 +138,10 @@ int setup_socket(fp_entity *fpe)
 
 void close_socket(fp_entity *fpe)
 {
-	close(fpe->sock_fd);
-	fpe->sock_fd = -1;
+	/*
+	  close wont work!
+	  see: http://ticktick.blog.51cto.com/823160/845536
+	 */
+	// close(fpe->sock_fd);
+	shutdown(fpe->sock_fd, SHUT_RDWR);
 }

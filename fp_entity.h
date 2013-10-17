@@ -3,12 +3,13 @@
 
 #include <stdint.h>
 #include <stddef.h>
-
+#include <string.h>
 
 #include "msgb.h"
 #include "thread.h"
 #include "queue.h"
 
+#define INIT_FP_ENTITY(fpe) (memset(fpe, 0, sizeof(*fpe)))
 #define MAKE_TX_ONLY_FP_ENTITY(fpe) ()
 #define MAKE_RX_ONLY_FP_ENTITY(fpe) ()
 #define MAKE_TRX_FP_ENTITY(fpe) ()

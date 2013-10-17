@@ -5,7 +5,10 @@
 
 void queue_init(fp_threadsafe_queue *q)
 {
+	
 	memset(q, 0, sizeof(*q));
+
+	INIT_LLIST_HEAD(&q->qlist);
 
 	int s = pthread_mutex_init(&q->qlock, NULL);
 	assert(!s);

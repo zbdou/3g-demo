@@ -99,8 +99,8 @@ void msgb_set_talloc_ctx(void *ctx)
 struct msgb* msgb_queue_read(fp_threadsafe_queue *q)
 {
 	pthread_mutex_lock(&q->qlock);
-	struct msgb *msg = msgb_dequeue(&q->qlist);
 
+	struct msgb *msg = msgb_dequeue(&q->qlist);
 	while( msg == NULL && q->qevent != Q_DESTROY) {
 		pthread_cond_wait(&q->qsignal, &q->qlock);
 		msg = msgb_dequeue(&q->qlist);

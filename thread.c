@@ -69,10 +69,13 @@ void* queue_manager_thread_func(void* arg)
 
 	/* if txrx_queue is not empty, flush it */
 	while( msg2 = msgb_dequeue(&fpe->txrx_queue.qlist), msg2 ) {
+		// printf("msg2 = %0x\n", msg2);
 		fpe->txrx_queue.current_len--;
-		fpe->cbflushed(fpe, msg2);
+		if(fpe->cbflushed)
+			fpe->cbflushed(fpe, msg2);
 		/* free msg2 */
 	}
+	// printf("finished\n");
 	return ((void*)0);
 }
 
@@ -82,13 +85,15 @@ void* receiver_thread_func(void* arg)
 	fp_entity* fpe = (fp_entity*) arg;
 	assert(fpe);
 
-	int ret = 0;
+	int ret = -1;
 	unsigned char recvbuf[BUFFER_SIZE];
 	struct sockaddr_in client_addr;
 	socklen_t client_len = (socklen_t) sizeof(struct sockaddr_in);
-	
+
 	while (ret = recvfrom(fpe->sock_fd, recvbuf, sizeof(recvbuf), 0,
-						  (struct sockaddr*) &client_addr, &client_len), ret > 0) {
+						  (struct sockaddr*) &client_addr, &client_len), ret != -1) {
+
+		// printf("ret = %d\n", ret);
 
 		if(queue_event(&fpe->txrx_queue) == Q_DESTROY) break;
 
@@ -103,5 +108,6 @@ void* receiver_thread_func(void* arg)
 		}
 	} /* while... */
 
+	// printf("receiver_thread_func finished\n");
 	return ((void*)0);
 }
