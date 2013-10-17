@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+
+#include "msgb.h"
 #include "thread.h"
 #include "queue.h"
 
@@ -42,7 +44,7 @@ typedef struct {
 /*
   NOTE: void *fpe should be fp_entity *fpe
  */
-typedef void*(*cb_received)(void *fpe, data_block *db);
+typedef void*(*cb_received)(void *fpe, struct msgb* msg);
 typedef cb_received cb_flushed;
 typedef cb_received cb_acked;
 

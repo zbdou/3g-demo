@@ -21,6 +21,9 @@ void close_socket(fp_entity *fpe);
 */
 #define HAS_RX(fpe) (fpe->mode == RX_ONLY || fpe->mode == TRX)
 
+/*
+  this function should make itself easier to use.
+ */
 int fp_entity_init(fp_entity *fpe)
 {
 

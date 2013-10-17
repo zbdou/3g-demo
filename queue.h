@@ -25,8 +25,13 @@ typedef struct {
 
 extern void queue_init(fp_threadsafe_queue *q);
 extern void queue_destroy(fp_threadsafe_queue *q);
-extern size_t queue_size(fp_threadsafe_queue *q);
 extern void queue_destroy_notify(fp_threadsafe_queue *q, int notify);
+extern size_t queue_size(fp_threadsafe_queue *q);
+static inline fp_QUEUE_EVENT queue_event(fp_threadsafe_queue *q)
+{
+	return q->qevent;
+}
+
 
 
 #endif	/* _QUEUE_H_ */
