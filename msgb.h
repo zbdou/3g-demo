@@ -5,6 +5,8 @@
 #include <osmocom/core/linuxlist.h>
 #include <osmocom/core/utils.h>
 
+#include "queue.h"
+
 /*! \defgroup msgb Message buffers
  *  @{
  */
@@ -29,7 +31,8 @@ struct msgb {
 	unsigned char *head;	/*!< \brief start of underlying memory buffer */
 	unsigned char *tail;	/*!< \brief end of message in buffer */
 	unsigned char *data;	/*!< \brief start of message in buffer */
-	unsigned char _data[0]; /*!< \brief optional immediate data array */
+
+	fp_QUEUE_EVENT event;
 };
 
 extern struct msgb *msgb_alloc(const char *name, unsigned char *data, uint16_t datalen);
@@ -38,6 +41,14 @@ extern void msgb_enqueue(struct llist_head *queue, struct msgb *msg);
 extern struct msgb *msgb_dequeue(struct llist_head *queue);
 extern void msgb_reset(struct msgb *m);
 uint16_t msgb_length(const struct msgb *msg);
+
+
+
+
+extern struct msgb* msgb_queue_read(fp_threadsafe_queue *q);
+extern void msgb_queue_write(fp_threadsafe_queue *q, struct msgb* msg);
+
+
 
 #ifdef MSGB_DEBUG
 #include <osmocom/core/panic.h>
