@@ -2,6 +2,10 @@
 #define _FP_ENTITY_H_
 
 #include <stdint.h>
+#include <stddef.h>
+
+#include "thread.h"
+#include "queue.h"
 
 #define MAKE_TX_ONLY_FP_ENTITY(fpe) ()
 #define MAKE_RX_ONLY_FP_ENTITY(fpe) ()
@@ -14,7 +18,7 @@
 #define MAX_NODE_ADDR (100)
 
 typedef struct {
-	char *addr[MAX_NODE_ADDR];
+	char addr[MAX_NODE_ADDR];
 	uint16_t port;
 } fp_node_info;
 
@@ -35,23 +39,28 @@ typedef struct {
 } data_block;
 
 
-struct fp_entity_t;
-typedef void*(*cb_received)(fp_entity_t *fpe, data_block *db);
+/*
+  NOTE: void *fpe should be fp_entity *fpe
+ */
+typedef void*(*cb_received)(void *fpe, data_block *db);
 typedef cb_received cb_flushed;
 typedef cb_received cb_acked;
 
 typedef struct {
-	
-	
-} fp_entity_cb_funcs;
-
-typedef struct fp_entity_t {
 	fp_MODE mode;
 	fp_node_info self;
 	fp_node_info peer;
 
-	
+	cb_received cbreceived;
+	cb_flushed cbflushed;
+	cb_acked cbacked;
+
 	int sock_fd;
+
+	fp_thread receiver;
+	fp_thread queue_manager;
+
+	fp_threadsafe_queue txrx_queue;
 } fp_entity;
 
 
@@ -60,5 +69,20 @@ typedef struct fp_entity_t {
   return SUCCESS or FAILURE
  */
 extern int fp_entity_init(fp_entity *fpe);
+
+
+/*
+  destroy a FP ENTITY
+  return SUCCESS or FAILURE
+ */
+extern int fp_entity_destroy(fp_entity* fpe);
+
+
+/*
+  send an RLC/MAC data block
+  return SUCCESS or FAILURE  
+ */
+extern int fp_entity_send(fp_entity* fpe, data_block *db);
+
 
 #endif	/* _FP_ENTITY_H_ */
