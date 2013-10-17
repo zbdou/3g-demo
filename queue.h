@@ -6,9 +6,10 @@
 #include <osmocom/core/linuxlist.h>
 
 typedef enum {
-	Q_TX_PKT = 0,
-	Q_RX_PKT,
-	Q_DESTROY
+	Q_NORMAL = 0,				/* initial status of a queue */
+	Q_TX_PKT,					/* mark the msg for TX */
+	Q_RX_PKT,					/* mark the msg as received (RX) */
+	Q_DESTROY					/* mark this queue to be destroyed */
 } fp_QUEUE_EVENT;
 
 typedef struct {
@@ -22,10 +23,10 @@ typedef struct {
 } fp_threadsafe_queue;
 
 
-extern void queue_init(fp_threadsafe_queue *q, fp_QUEUE_EVENT qtype);
+extern void queue_init(fp_threadsafe_queue *q);
 extern void queue_destroy(fp_threadsafe_queue *q);
 extern size_t queue_size(fp_threadsafe_queue *q);
-extern void queue_destroy_notify(fp_threadsafe_queue *q);
+extern void queue_destroy_notify(fp_threadsafe_queue *q, int notify);
 
 
 #endif	/* _QUEUE_H_ */

@@ -1,4 +1,4 @@
-CFLAGS = -g -I. -Wall
+CFLAGS = -g -I. -Wall -DDEBUG_MEM
 CC = gcc
 
 

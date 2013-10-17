@@ -3,7 +3,7 @@
 
 #include "queue.h"
 
-void queue_init(fp_threadsafe_queue *q, fp_QUEUE_EVENT qtype)
+void queue_init(fp_threadsafe_queue *q)
 {
 	memset(q, 0, sizeof(*q));
 
@@ -12,8 +12,7 @@ void queue_init(fp_threadsafe_queue *q, fp_QUEUE_EVENT qtype)
 	s = pthread_cond_init(&q->qsignal, NULL);
 	assert(!s);
 
-	q->qevent = qtype;
-	assert(q->qevent != Q_DESTROY);
+	q->qevent = Q_NORMAL;
 }
 
 void queue_destroy(fp_threadsafe_queue *q)
@@ -27,12 +26,14 @@ size_t queue_size(fp_threadsafe_queue *q)
 	return q->current_len;
 }
 
-void queue_destroy_notify(fp_threadsafe_queue *q)
+void queue_destroy_notify(fp_threadsafe_queue *q, int notify)
 {
 	q->qevent = Q_DESTROY;
 
-	/* wake up the queue_manager thread */
-	pthread_mutex_lock(&q->qlock);
-	pthread_cond_signal(&q->qsignal);
-	pthread_mutex_unlock(&q->qlock);
+	if (notify) {
+		/* wake up the queue_manager thread */
+		pthread_mutex_lock(&q->qlock);
+		pthread_cond_signal(&q->qsignal);
+		pthread_mutex_unlock(&q->qlock);
+	}
 }

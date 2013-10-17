@@ -35,7 +35,7 @@ struct msgb {
 	fp_QUEUE_EVENT event;
 };
 
-extern struct msgb *msgb_alloc(const char *name, unsigned char *data, uint16_t datalen);
+extern struct msgb *msgb_alloc(const char *name, unsigned char *data, uint16_t datalen, fp_QUEUE_EVENT e);
 extern void msgb_free(struct msgb *m);
 extern void msgb_enqueue(struct llist_head *queue, struct msgb *msg);
 extern struct msgb *msgb_dequeue(struct llist_head *queue);

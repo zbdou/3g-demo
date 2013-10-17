@@ -12,11 +12,15 @@ void *tall_msgb_ctx;
 /*
   put @data with len = @datalen to the msgb struct;
  */
-struct msgb *msgb_alloc(const char *name, unsigned char *data, uint16_t datalen)
+struct msgb *msgb_alloc(const char *name, unsigned char *data, uint16_t datalen, fp_QUEUE_EVENT e)
 {
 	struct msgb *msg;
 
+#ifndef DEBUG_MEM
 	msg = _talloc_zero(tall_msgb_ctx, sizeof(*msg), name);
+#else
+	msg = (struct msgb*) malloc(sizeof(struct msgb));
+#endif
 
 	if (!msg) {
 		//LOGP(DRSL, LOGL_FATAL, "unable to allocate msgb\n");
@@ -28,7 +32,9 @@ struct msgb *msgb_alloc(const char *name, unsigned char *data, uint16_t datalen)
 
 	msg->data = data;
 	msg->head = msg->data;
-	msg->tail = msg->data;
+	msg->tail = msg->data + datalen;
+
+	msg->event = e;
 
 	return msg;
 }
@@ -38,7 +44,12 @@ struct msgb *msgb_alloc(const char *name, unsigned char *data, uint16_t datalen)
  */
 void msgb_free(struct msgb *m)
 {
+#ifndef DEBUG_MEM
 	talloc_free(m);
+#else
+	free(m);
+#endif
+
 }
 
 

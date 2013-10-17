@@ -22,8 +22,8 @@ extern void thread_destroy(fp_thread *th);
 extern void thread_join(fp_thread *th);
 extern void thread_start(fp_thread *th);
 
-extern void queue_manager_thread_func(void* arg);
-extern void receiver_thread_func(void* arg);
+extern void* queue_manager_thread_func(void* arg);
+extern void* receiver_thread_func(void* arg);
 
 
 #endif	/* _THREAD_H_ */

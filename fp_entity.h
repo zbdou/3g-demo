@@ -35,7 +35,7 @@ typedef enum {
  */
 typedef struct {
 	size_t data_len;
-	char *data;
+	unsigned char *data;
 } data_block;
 
 

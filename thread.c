@@ -32,13 +32,12 @@ void thread_start(fp_thread *th)
 	assert(!s);
 }
 
-void queue_manager_thread_func(void* arg)
+void* queue_manager_thread_func(void* arg)
 {
-
-		
+	return ((void*)0);
 }
 
-void receiver_thread_func(void* arg)
+void* receiver_thread_func(void* arg)
 {
-		
+	return ((void*)0);
 }
