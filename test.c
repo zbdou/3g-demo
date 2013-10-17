@@ -4,6 +4,8 @@
  */
 
 #include <stdio.h>
+#include <unistd.h>
+
 
 #include "test.h"
 
@@ -13,7 +15,8 @@
 
 void* cbr(void* fpe, struct msgb* msg)
 {
-	printf("cbr.......\n");
+
+	printf("cbr: %s\n", msg->data);
 	return ((void*)0);
 }
 
@@ -31,19 +34,36 @@ int main(void)
 	fp_entity fpentity;
 	INIT_FP_ENTITY(&fpentity);
 
-	fpentity.mode = RX_ONLY;
+	fpentity.mode = TRX;
 
 	sprintf(fpentity.self.addr, "%s", "localhost");
-	fpentity.self.port = 10001;
+	fpentity.self.port = 5001;
 
-	sprintf(fpentity.peer.addr, "%s", "localhost");
-	fpentity.peer.port = 10002;
+	sprintf(fpentity.peer.addr, "%s", "127.0.0.1");
+	fpentity.peer.port = 5002;
 	
 	fpentity.cbreceived = cbr;
 	fpentity.cbflushed = cbf;
 
-	fp_entity_init(&fpentity);
+	if( fp_entity_init(&fpentity) == FAILURE ) {
+		printf("fp_entity_init failed\n");
+		return 0;
+	}
 
+	int max_pkt_sent = 10;
+	char data[100] = "zbdou.udp.text";
+	data_block db = {
+		strlen(data),
+		data
+	};
+	
+	while(max_pkt_sent--) {
+		fp_entity_send(&fpentity, &db);
+		sleep(1);
+	}
+
+	sleep(1);
 	fp_entity_destroy(&fpentity);
+
 	return 0;
 }

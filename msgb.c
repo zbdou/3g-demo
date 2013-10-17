@@ -12,7 +12,7 @@ void *tall_msgb_ctx;
 /*
   put @data with len = @datalen to the msgb struct;
  */
-struct msgb *msgb_alloc(const char *name, unsigned char *data, uint16_t datalen, fp_QUEUE_EVENT e)
+struct msgb *msgb_alloc(const char *name, char *data, uint16_t datalen, fp_QUEUE_EVENT e)
 {
 	struct msgb *msg;
 
@@ -81,7 +81,7 @@ void msgb_reset(struct msgb *msg)
 
 uint8_t *msgb_data(const struct msgb *msg)
 {
-	return msg->data;
+	return (uint8_t*) (msg->data);
 }
 
 uint16_t msgb_length(const struct msgb *msg)

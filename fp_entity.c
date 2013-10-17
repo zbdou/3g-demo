@@ -29,7 +29,6 @@ int fp_entity_init(fp_entity *fpe)
 {
 	if (fpe == NULL) return FAILURE;
 
-
 	/* check if fpe->self, fpe->peer are valid */
 	if(HAS_RX(fpe)) {
 		if(fpe->cbreceived == NULL)
@@ -79,7 +78,6 @@ int fp_entity_destroy(fp_entity* fpe)
 	case RX_ONLY:
 		/* terminate fpe->receiver thread */
 		queue_destroy_notify(&fpe->txrx_queue, 0);
-		close_socket(fpe);
 
 		/* fall through */
 	case TX_ONLY:
@@ -89,8 +87,12 @@ int fp_entity_destroy(fp_entity* fpe)
 		break;
 	}
 
-	thread_join(&fpe->receiver);
-	thread_destroy(&fpe->receiver);
+	close_socket(fpe);
+
+	if(HAS_RX(fpe)) {
+		thread_join(&fpe->receiver);
+		thread_destroy(&fpe->receiver);
+	}
 
 	thread_join(&fpe->queue_manager);
 	thread_destroy(&fpe->queue_manager);
@@ -120,6 +122,7 @@ int fp_entity_send(fp_entity* fpe, data_block *db)
 
 	/* add this msgb to the txrx_queue && wakeup queue_manager */
 	msgb_queue_write(&fpe->txrx_queue, msg);
+
 	return SUCCESS;
 }
 
