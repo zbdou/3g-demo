@@ -29,7 +29,6 @@ int fp_entity_init(fp_entity *fpe)
 {
 	if (fpe == NULL) return FAILURE;
 
-	INIT_LLIST_HEAD(&fpe->txrx_queue.qlist);
 
 	/* check if fpe->self, fpe->peer are valid */
 	if(HAS_RX(fpe)) {
