@@ -32,18 +32,9 @@ void* cbf(void* fpe, struct msgb* msg)
 int main(void)
 {
 	fp_entity fpentity;
-	INIT_FP_ENTITY(&fpentity);
-
-	fpentity.mode = TRX;
-
-	sprintf(fpentity.self.addr, "%s", "localhost");
-	fpentity.self.port = 5001;
-
-	sprintf(fpentity.peer.addr, "%s", "127.0.0.1");
-	fpentity.peer.port = 5002;
-	
-	fpentity.cbreceived = cbr;
-	fpentity.cbflushed = cbf;
+	MAKE_TRX_FP_ENTITY((&fpentity), "localhost", 5001, "127.0.0.1", 5002, cbr, cbf, NULL);
+	MAKE_TX_ONLY_FP_ENTITY((&fpentity), "localhost", 5001, "127.0.0.1", 5002, cbr, cbf, NULL);
+	MAKE_RX_ONLY_FP_ENTITY((&fpentity), "localhost", 5001, "127.0.0.1", 5002, cbr, cbf, NULL);	
 
 	if( fp_entity_init(&fpentity) == FAILURE ) {
 		printf("fp_entity_init failed\n");

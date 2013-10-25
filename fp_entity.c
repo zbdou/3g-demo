@@ -8,9 +8,7 @@
 #include "fp_entity.h"
 #include "msgb.h"
 
-
 #define TX_NOT_ALLOWED(fpe) (fpe->txrx_queue.qevent == Q_DESTROY)
-
 
 /* forward declaration */
 int setup_socket(fp_entity *fpe);
@@ -51,9 +49,7 @@ int fp_entity_init(fp_entity *fpe)
 	}
 
 	/* create && setup fpe->txrx_queue */
-	/* ........................... */
 	queue_init(&fpe->txrx_queue);
-
 
 	/* create && setup fpe->queue_manager */
 	thread_init(&fpe->queue_manager, 65534*4, queue_manager_thread_func, (void*)fpe);
