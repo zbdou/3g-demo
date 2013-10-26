@@ -32,16 +32,14 @@ void* cbf(void* fpe, struct msgb* msg)
 int main(void)
 {
 	fp_entity fpentity;
-	MAKE_TRX_FP_ENTITY((&fpentity), "localhost", 5001, "127.0.0.1", 5002, cbr, cbf, NULL);
 	MAKE_TX_ONLY_FP_ENTITY((&fpentity), "localhost", 5001, "127.0.0.1", 5002, cbr, cbf, NULL);
-	MAKE_RX_ONLY_FP_ENTITY((&fpentity), "localhost", 5001, "127.0.0.1", 5002, cbr, cbf, NULL);	
 
 	if( fp_entity_init(&fpentity) == FAILURE ) {
 		printf("fp_entity_init failed\n");
 		return 0;
 	}
 
-	int max_pkt_sent = 10;
+	int max_pkt_sent = 1;
 	char data[100] = "zbdou.udp.text";
 	data_block db = {
 		strlen(data),

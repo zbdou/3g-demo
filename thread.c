@@ -71,7 +71,7 @@ void* queue_manager_thread_func(void* arg)
 				printf("send pkt out, ret = %d\n", ret);
 					
 				/* free msg */
-				free(msg);
+				msgb_free(msg);
 				break;
 			}
 			case Q_RX_PKT: {
@@ -79,7 +79,7 @@ void* queue_manager_thread_func(void* arg)
 				fpe->cbreceived(fpe, msg);
 				
 				/* free msg */
-				free(msg);
+				msgb_free(msg);
 				break;
 			}
 			default:
@@ -95,7 +95,7 @@ void* queue_manager_thread_func(void* arg)
 		if(fpe->cbflushed)
 			fpe->cbflushed(fpe, msg2);
 		/* free msg2 */
-		free(msg2);
+		msgb_free(msg2);
 	}
 	return ((void*)0);
 }
