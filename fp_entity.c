@@ -142,4 +142,5 @@ void close_socket(fp_entity *fpe)
 	 */
 	// close(fpe->sock_fd);
 	shutdown(fpe->sock_fd, SHUT_RDWR);
+	close(fpe->sock_fd);
 }
