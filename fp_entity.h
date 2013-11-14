@@ -86,10 +86,7 @@ typedef struct {
 
 	int sock_fd;
 
-	fp_thread receiver;
 	sem_t wait_receiver;
-	
-	fp_thread queue_manager;
 	sem_t wait_queue_manager;
 
 	fp_threadsafe_queue txrx_queue;
