@@ -41,7 +41,7 @@ void thread_start(fp_thread *th)
 	assert(!s);
 }
 
-void* queue_manager_thread_func(void* arg)
+void queue_manager_thread_func(void* arg)
 {
 	fp_entity* fpe = (fp_entity*) arg;
 	assert(fpe);
@@ -97,11 +97,11 @@ void* queue_manager_thread_func(void* arg)
 		/* free msg2 */
 		msgb_free(msg2);
 	}
-	return ((void*)0);
+	sem_post(&fpe->wait_queue_manager);
 }
 
 #define BUFFER_SIZE (1500)
-void* receiver_thread_func(void* arg)
+void receiver_thread_func(void* arg)
 {
 	fp_entity* fpe = (fp_entity*) arg;
 	assert(fpe);
@@ -126,5 +126,5 @@ void* receiver_thread_func(void* arg)
 			msgb_queue_write(&fpe->txrx_queue, msg);
 		}
 	} /* while... */
-	return ((void*)0);
+	sem_post(&fpe->wait_receiver);
 }

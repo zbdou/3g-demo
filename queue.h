@@ -17,7 +17,7 @@ typedef struct {
 	pthread_cond_t qsignal;
 
 	struct llist_head qlist;
-	size_t current_len;
+	int current_len;			/* -1 means quit */
 
 	fp_QUEUE_EVENT qevent;
 } fp_threadsafe_queue;
@@ -26,7 +26,7 @@ typedef struct {
 extern void queue_init(fp_threadsafe_queue *q);
 extern void queue_destroy(fp_threadsafe_queue *q);
 extern void queue_destroy_notify(fp_threadsafe_queue *q, int notify);
-extern size_t queue_size(fp_threadsafe_queue *q);
+extern int queue_size(fp_threadsafe_queue *q);
 static inline fp_QUEUE_EVENT queue_event(fp_threadsafe_queue *q)
 {
 	return q->qevent;

@@ -24,7 +24,7 @@ void queue_destroy(fp_threadsafe_queue *q)
 	assert(q->qevent == Q_DESTROY);
 }
 
-size_t queue_size(fp_threadsafe_queue *q)
+int queue_size(fp_threadsafe_queue *q)
 {
 	return q->current_len;
 }
@@ -40,3 +40,8 @@ void queue_destroy_notify(fp_threadsafe_queue *q, int notify)
 		pthread_mutex_unlock(&q->qlock);
 	}
 }
+
+
+
+
+

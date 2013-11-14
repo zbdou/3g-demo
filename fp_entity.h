@@ -4,11 +4,12 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include <semaphore.h>
 
 #include "msgb.h"
 #include "thread.h"
 #include "queue.h"
-
+#include "threadpool.h"
 
 #define _INIT_FP_ENTITY(fpe) (memset(fpe, 0, sizeof(*fpe)))
 #define MAKE_TX_ONLY_FP_ENTITY(fpe, self_addr, self_port, peer_addr, peer_port, cbr, cbf, cba) { \
@@ -86,16 +87,20 @@ typedef struct {
 	int sock_fd;
 
 	fp_thread receiver;
+	sem_t wait_receiver;
+	
 	fp_thread queue_manager;
+	sem_t wait_queue_manager;
 
 	fp_threadsafe_queue txrx_queue;
+
 } fp_entity;
 
 /*
-  init an FP ENTITY,
+  init a FP ENTITY,
   return SUCCESS or FAILURE
  */
-extern int fp_entity_init(fp_entity *fpe);
+extern int fp_entity_init(fp_entity *fpe, threadpool_t* tpool);
 
 /*
   destroy a FP ENTITY
