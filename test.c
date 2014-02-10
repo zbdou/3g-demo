@@ -34,29 +34,36 @@ void* cbf(void* fpe, struct msgb* msg)
 
 int main(void)
 {
-	int max_entity_alloced = 2000;
-	
-	fp_entity* fpe = NULL;
+	int i;
+	int max_entity_alloced = 200;
+	fp_entity* fpe[10];
 
 	/* create the thread pool */
 	threadpool_t* pool = threadpool_create(THREAD, SIZE, 0);
 	
-	
 	while (max_entity_alloced-- > 0)
 	{
-		fpe = (fp_entity*)malloc(sizeof(fp_entity));
-		if(fpe) {
-			MAKE_TRX_FP_ENTITY((fpe), "localhost", 5001, "127.0.0.1", 5002, cbr, cbf, NULL);
-			if( fp_entity_init(fpe, pool) == FAILURE ) {
-				printf("fp_entity_init failed\n");
-				return 0;
+		for (i = 9; i >= 0; i--) {
+			fpe[i] = (fp_entity*)malloc(sizeof(fp_entity));
+			if(fpe[i]) {
+				MAKE_TRX_FP_ENTITY((fpe[i]), "localhost", 5001+i, "127.0.0.1", 5002, cbr, cbf, NULL);
+				if( fp_entity_init(fpe[i], pool) == FAILURE ) {
+					printf("fp_entity_init failed\n");
+					return 0;
+				}
 			}
-			//usleep(10);
-			fp_entity_destroy(fpe);
 		}
-		free(fpe);
-		fpe = NULL;
+
+		usleep(10);
+
+		for (i = 0; i < 10; i++)
+		{
+			fp_entity_destroy(fpe[i]);
+			free(fpe[i]);
+			fpe[i] = NULL;
+		}
 	}
+
 
 	/* destroy the thread pool */
 	assert(threadpool_destroy(pool, 0) == 0);
